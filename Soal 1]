@@ -1,0 +1,85 @@
+#include <iostream>
+#include <string>
+
+class AnggotaTim {
+protected:
+    std::string nama;
+    std::string peran;
+    int gajiPokok;
+public:
+    AnggotaTim() : nama(""), peran(""), gajiPokok(0) {} 
+    AnggotaTim(std::string nama, std::string peran, int gajiPokok)
+        : nama(nama), peran(peran), gajiPokok(gajiPokok) {}
+};
+
+class Pembalap : public AnggotaTim {
+private:
+    int jumlah_podium;
+public:
+    Pembalap() : AnggotaTim(), jumlah_podium(0) {} 
+    Pembalap(std::string nama, int gajiPokok, int jumlah_podium)
+        : AnggotaTim(nama, "pembalap", gajiPokok), jumlah_podium(jumlah_podium) {}
+    
+    int hitungGajiTotal() {
+        return gajiPokok + (jumlah_podium * 20000);
+    }
+    
+    void printInfo() {
+        std::cout << "Gaji total " << nama << " (" << peran << ") adalah $" << hitungGajiTotal() << std::endl;
+    }
+};
+
+class Crew : public AnggotaTim {
+private:
+    int jumlah_race;
+public:
+    Crew() : AnggotaTim(), jumlah_race(0) {} 
+    Crew(std::string nama, int gajiPokok, int jumlah_race)
+        : AnggotaTim(nama, "crew", gajiPokok), jumlah_race(jumlah_race) {}
+    
+    int hitungGajiTotal() {
+        return gajiPokok + (jumlah_race * 1000);
+    }
+    
+    void printInfo() {
+        std::cout << "Gaji total " << nama << " (" << peran << ") adalah $" << hitungGajiTotal() << std::endl;
+    }
+};
+
+int main() {
+    int jumlahAnggota;
+    std::cout << "jumlah anggota tim : ";
+    std::cin >> jumlahAnggota;
+    std::string nama, peran;
+    int gajiPokok, dataTambahan;
+    Pembalap pembalaps[100];
+    Crew crews[100];
+    int idxPembalap = 0, idxCrew = 0;
+    for (int i = 1; i <= jumlahAnggota; i++) {
+        std::cout << " === INPUT DATA ANGGOTA TIM KE-" << i << " ===" << std::endl;
+        std::cout << "nama : ";
+        std::cin >> nama;
+        std::cout << "peran : ";
+        std::cin >> peran;
+        std::cout << "gaji pokok : ";
+        std::cin >> gajiPokok;
+        if (peran == "pembalap") {
+            std::cout << "jumlah podium : ";
+            std::cin >> dataTambahan;
+            pembalaps[idxPembalap] = Pembalap(nama, gajiPokok, dataTambahan);
+            idxPembalap++;
+        } else {
+            std::cout << "jumlah race : ";
+            std::cin >> dataTambahan;
+            crews[idxCrew] = Crew(nama, gajiPokok, dataTambahan);
+            idxCrew++;
+        }
+    }
+    for (int i = 0; i < idxPembalap; i++) {
+        pembalaps[i].printInfo();
+    }
+    for (int i = 0; i < idxCrew; i++) {
+        crews[i].printInfo();
+    }
+    return 0;
+}
