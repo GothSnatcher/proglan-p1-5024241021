@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+
+class Vocaloid {
+protected:
+    std::string nama;
+    int accuracy;
+    int stamina;
+public:
+    Vocaloid(std::string nama, int accuracy, int stamina)
+        : nama(nama), accuracy(accuracy), stamina(stamina) {}
+    virtual void serang(Vocaloid& target) = 0;
+    bool isAlive() const {
+        return stamina > 0;
+    }
+    void printStatus() const {
+        std::cout << nama << " has " << stamina << " stamina remaining." << std::endl;
+    }
+    std::string getNama() const {
+        return nama;
+    }
+    int& getStamina() {
+        return stamina;
+    } 
+};
+
+class FirstVocaloid : public Vocaloid {
+public:
+    FirstVocaloid(std::string nama, int accuracy, int stamina)
+        : Vocaloid(nama, accuracy, stamina) {}
+    void serang(Vocaloid& target) override {
+        target.getStamina() -= accuracy;
+        if (target.getStamina() < 0) {
+            target.getStamina() = 0;
+        }
+    }
+};
+
+class SecondVocaloid : public Vocaloid {
+public:
+    SecondVocaloid(std::string nama, int accuracy, int stamina)
+        : Vocaloid(nama, accuracy, stamina) {}
+    void serang(Vocaloid& target) override {
+        target.getStamina() -= accuracy;
+        if (target.getStamina() < 0) {
+            target.getStamina() = 0;
+        }
+    }
+};
+    
+int main() {
+    std::string nama1, nama2, giliran;
+    int acc1, stam1, acc2, stam2;
+
+    std::cin >> nama1 >> acc1 >> stam1;
+    std::cin >> nama2 >> acc2 >> stam2;
+    std::cin >> giliran;
+
+    FirstVocaloid first(nama1, acc1, stam1);
+    SecondVocaloid second(nama2, acc2, stam2);
+
+    first.printStatus();
+    second.printStatus();
+
+    while (first.isAlive() && second.isAlive()) {
+        if (giliran == "first") {
+            std::cout << first.getNama() << " attacks " << second.getNama() << "!" << std::endl;
+            first.serang(second);
+            second.printStatus();
+            if (!second.isAlive()) break;
+
+            std::cout << second.getNama() << " attacks " << first.getNama() << "!" << std::endl;
+            second.serang(first);
+            first.printStatus();
+        } else {
+            std::cout << second.getNama() << " attacks " << first.getNama() << "!" << std::endl;
+            second.serang(first);
+            first.printStatus();
+            if (!first.isAlive()) break;
+
+            std::cout << first.getNama() << " attacks " << second.getNama() << "!" << std::endl;
+            first.serang(second);
+            second.printStatus();
+        }
+    }
+
+    if (first.isAlive()) {
+        std::cout << first.getNama() << " wins the contest!" << std::endl;
+    } else {
+        std::cout << second.getNama() << " wins the contest!" << std::endl;
+    }
+
+    return 0;
+};
+
